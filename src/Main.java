@@ -1,4 +1,4 @@
-import java.io.File;
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
@@ -29,6 +29,55 @@ public class Main {
 
             attempts++;
             System.out.println("Путь указан верно. Это файл номер " + attempts);
+            try {
+
+
+                FileReader fileReader = new FileReader(path);
+                BufferedReader reader = new BufferedReader(fileReader);
+
+                boolean firstLineProcessed = false;
+                int totalLines = 0;
+                int maxLength = 0;
+                int minLength = 0;
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    int length = line.length();
+
+                    if (length > 1024) {
+                        throw new StringTooLongException();
+                    }
+
+                    totalLines++;
+                    if (!firstLineProcessed) {
+                        minLength = length;
+                        maxLength = length;
+                        firstLineProcessed = true;
+                    } else {
+                        if (length < minLength) {
+                            minLength = length;
+                        }
+                        if (length > maxLength) {
+                            maxLength = length;
+                        }
+                    }
+                }
+                System.out.println("Количество строк в файле: " + totalLines);
+                System.out.println("Длина самой длинной строки: " + maxLength);
+                System.out.println("Длина самой короткой строки: " + minLength);
+            } catch (FileNotFoundException fnfe) {
+                System.err.println("Указанный файл не существует: " + fnfe.getMessage());
+            } catch (IOException e) {
+                System.err.println("Ошибка при чтении файла: " + e.getMessage());
+            }
         }
+    }
+}
+
+class StringTooLongException extends RuntimeException {
+    private static final String MESSAGE = "Найдена строка длиной больше 1024 символов!";
+
+    public StringTooLongException() {
+        super(MESSAGE);
     }
 }
