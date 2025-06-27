@@ -50,7 +50,12 @@ public class Main {
             String line;
 
             while ((line = reader.readLine()) != null) {
-                int length = line.length();
+                    if (line.isEmpty()) {
+                        continue;
+                    }
+                    if (line.length() > 1024) {
+                        throw new StringTooLongException();
+                    }
                 Matcher matcher = logPattern.matcher(line);
                 if (matcher.find()) {
                     totalLines++;
@@ -67,8 +72,6 @@ public class Main {
                             yandexbotCount++;
                         }
                     }
-                } else if (length > 1024) {
-                    throw new StringTooLongException();
                 }
             }
             System.out.println("Количество строк в файле: " + totalLines);
